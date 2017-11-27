@@ -12,11 +12,14 @@ export const swipeDirections = {
 
 const swipeConfig = {
   velocityThreshold: 0.3,
-  directionalOffsetThreshold: 80
+  directionalOffsetThreshold: 80,
+  sensetivity: 100
 };
 
-function isValidSwipe(velocity, velocityThreshold, directionalOffset, directionalOffsetThreshold) {
-  return Math.abs(velocity) > velocityThreshold && Math.abs(directionalOffset) < directionalOffsetThreshold;
+function isValidSwipe(velocity, velocityThreshold, directionalOffset, directionalOffsetThreshold, sensetivity) {
+  return Math.abs(velocity) > velocityThreshold
+    && Math.abs(directionalOffset) < directionalOffsetThreshold
+    && Math.abs(directionalOffset) > sensetivity;
 }
 
 class GestureRecognizer extends Component {
@@ -57,7 +60,7 @@ class GestureRecognizer extends Component {
   _triggerSwipeHandlers(swipeDirection, gestureState) {
     const {onSwipe, onSwipeUp, onSwipeDown, onSwipeLeft, onSwipeRight} = this.props;
     const {SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN} = swipeDirections;
-    onSwipe && onSwipe(swipeDirection, gestureState);
+    onSwipe && swipeDirection && onSwipe(swipeDirection, gestureState);
     switch (swipeDirection) {
       case SWIPE_LEFT:
         onSwipeLeft && onSwipeLeft(gestureState);
@@ -91,14 +94,14 @@ class GestureRecognizer extends Component {
 
   _isValidHorizontalSwipe(gestureState) {
     const {vx, dy} = gestureState;
-    const {velocityThreshold, directionalOffsetThreshold} = this.swipeConfig;
-    return isValidSwipe(vx, velocityThreshold, dy, directionalOffsetThreshold);
+    const {velocityThreshold, directionalOffsetThreshold, sensetivity} = this.swipeConfig;
+    return isValidSwipe(vx, velocityThreshold, dy, directionalOffsetThreshold, sensetivity);
   }
 
   _isValidVerticalSwipe(gestureState) {
     const {vy, dx} = gestureState;
-    const {velocityThreshold, directionalOffsetThreshold} = this.swipeConfig;
-    return isValidSwipe(vy, velocityThreshold, dx, directionalOffsetThreshold);
+    const {velocityThreshold, directionalOffsetThreshold, sensetivity} = this.swipeConfig;
+    return isValidSwipe(vy, velocityThreshold, dx, directionalOffsetThreshold, sensetivity);
   }
 
   render() {

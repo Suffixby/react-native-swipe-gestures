@@ -12,14 +12,11 @@ export const swipeDirections = {
 
 const swipeConfig = {
   velocityThreshold: 0.3,
-  directionalOffsetThreshold: 80,
-  sensetivity: 100
+  directionalOffsetThreshold: 80
 };
 
-function isValidSwipe(velocity, velocityThreshold, directionalOffset, directionalOffsetThreshold, sensetivity) {
-  return Math.abs(velocity) > velocityThreshold
-    && Math.abs(directionalOffset) < directionalOffsetThreshold
-    && Math.abs(directionalOffset) > sensetivity;
+function isValidSwipe(velocity, velocityThreshold, directionalOffset, directionalOffsetThreshold) {
+  return Math.abs(velocity) > velocityThreshold && Math.abs(directionalOffset) < directionalOffsetThreshold;
 }
 
 class GestureRecognizer extends Component {
@@ -49,7 +46,7 @@ class GestureRecognizer extends Component {
   }
   
   _gestureIsClick(gestureState) {
-    return Math.abs(gestureState.dx) < 5  && Math.abs(gestureState.dy) < 5;
+    return Math.abs(gestureState.dx) < 20  && Math.abs(gestureState.dy) < 20;
   }
 
   _handlePanResponderEnd(evt, gestureState) {
@@ -60,7 +57,7 @@ class GestureRecognizer extends Component {
   _triggerSwipeHandlers(swipeDirection, gestureState) {
     const {onSwipe, onSwipeUp, onSwipeDown, onSwipeLeft, onSwipeRight} = this.props;
     const {SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN} = swipeDirections;
-    onSwipe && swipeDirection && onSwipe(swipeDirection, gestureState);
+    onSwipe && onSwipe(swipeDirection, gestureState);
     switch (swipeDirection) {
       case SWIPE_LEFT:
         onSwipeLeft && onSwipeLeft(gestureState);
@@ -94,14 +91,14 @@ class GestureRecognizer extends Component {
 
   _isValidHorizontalSwipe(gestureState) {
     const {vx, dy} = gestureState;
-    const {velocityThreshold, directionalOffsetThreshold, sensetivity} = this.swipeConfig;
-    return isValidSwipe(vx, velocityThreshold, dy, directionalOffsetThreshold, sensetivity);
+    const {velocityThreshold, directionalOffsetThreshold} = this.swipeConfig;
+    return isValidSwipe(vx, velocityThreshold, dy, directionalOffsetThreshold);
   }
 
   _isValidVerticalSwipe(gestureState) {
     const {vy, dx} = gestureState;
-    const {velocityThreshold, directionalOffsetThreshold, sensetivity} = this.swipeConfig;
-    return isValidSwipe(vy, velocityThreshold, dx, directionalOffsetThreshold, sensetivity);
+    const {velocityThreshold, directionalOffsetThreshold} = this.swipeConfig;
+    return isValidSwipe(vy, velocityThreshold, dx, directionalOffsetThreshold);
   }
 
   render() {
